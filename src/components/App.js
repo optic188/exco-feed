@@ -1,11 +1,10 @@
 import React, { Component, lazy, Suspense } from 'react';
-
 import './App.css'
-
 import Navbar from '../components/Navbar/Navbar'
-import playbuzz from '../api/playbuzz';
+import { Switch, Route } from 'react-router-dom';
 
 const ItemsList = lazy(() => import('./ItemsList/ItemsList'));
+const Items = lazy(() => import('./Items/Items'));
 
 class App extends Component {
     state = { items: [] };
@@ -15,9 +14,20 @@ class App extends Component {
             <div className="app">
                 <Navbar />
                 <main>
-                    <Suspense fallback={'Loading..'}>
-                        <ItemsList items={this.state.items} />
-                    </Suspense>
+                    <Switch>
+                        <Route exact path="/" >
+                            <Suspense fallback={'Loading..'}>
+                                <ItemsList items={this.state.items} />
+                            </Suspense>
+                        </Route>
+                        <Route exact path="/items/:id" >
+                            <Suspense fallback={'Loading..'}>
+                                <Items items={this.state.items} />
+                            </Suspense>
+                        </Route>
+
+                    </Switch>
+
                 </main>
             </div>
         );
@@ -30,8 +40,11 @@ class App extends Component {
     }
 
     async getItems() {
-        const response = await playbuzz.get('/content/feed/resources.json');
-        return response.data.items;
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+        // const response = await playbuzz.get(proxyUrl+'content/feed/resources.json');
+        const response = await fetch(proxyUrl+'https://playbuzz-cdn.s3.amazonaws.com/content/feed/resources.json')
+        const myJson = await response.json();
+        return myJson.items;
 
     }
 }
