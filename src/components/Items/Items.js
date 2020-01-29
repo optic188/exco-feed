@@ -7,7 +7,7 @@ import {getSupportedVideos} from "../../utils";
 const Items = (props) => {
 
     const { id } = useParams();
-    const item = getSupportedVideos(props.items).filter((item, index) => item.videoId === id )[0] || {title:"video not defined"};
+    const item = getSupportedVideos(props.items).filter((item, index) => item.videoId === id )[0] || {title:"video not  defined"};
     return (
         <div className="items">
             <h3>{item.title}</h3>
