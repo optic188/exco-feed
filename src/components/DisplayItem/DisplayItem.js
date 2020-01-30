@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import './DisplayItem.css'
 
-import { VideoSourceTypes } from '../../types/VideoSourceTypes'
+import {VideoSourceTypes} from '../../types/VideoSourceTypes'
+import {Link} from "react-router-dom";
 
 class displayItem extends Component {
 
@@ -15,13 +16,13 @@ class displayItem extends Component {
         return type && source && views && length && date;
     };
 
-    dateStrOption = { year: 'numeric', month: 'short', day: 'numeric' };
+    dateStrOption = {year: 'numeric', month: 'short', day: 'numeric'};
 
     numberToReadableText(num) {
         const number = Math.abs(Number(num));
         return number >= 1.0e+9 ?
             number / 1.0e+9 + "B" : number >= 1.0e+6 ?
-                Math.round( (number / 1.0e+6) * 10 ) / 10 + "M" : number >= 1.0e+3 ?
+                Math.round((number / 1.0e+6) * 10) / 10 + "M" : number >= 1.0e+3 ?
                     number / 1.0e+3 + "K" : number;
     };
 
@@ -32,17 +33,22 @@ class displayItem extends Component {
         return `${minutes}:${seconds}m`;
     };
 
-
     render() {
-        if(this.isValidItem(this.props.itemData)) {
-            const dateStr = new Date(this.props.itemData.date).toLocaleDateString("en-US", this.dateStrOption);
-            const readableViewsNumber = this.numberToReadableText(this.props.itemData.views);
+        const {itemData, isLink} = this.props
+        if (this.isValidItem(itemData)) {
+            const dateStr = new Date(itemData.date).toLocaleDateString("en-US", this.dateStrOption);
+            const readableViewsNumber = this.numberToReadableText(itemData.views);
             const videoDuration = this.secondsToTimeText(this.props.itemData.length);
             return (
                 <div className="display-item">
-                    {this.videoSourceConfig.getPlayer(this.props.itemData[this.videoSourceConfig.id])}
+                    {this.videoSourceConfig.getPlayer(itemData[this.videoSourceConfig.id])}
                     <div className="display-item__details">
-                        <h2>{this.props.itemData.title}</h2>
+                        {isLink ? (<h2><Link to={
+                            {
+                                pathname: `/items/${itemData.videoId}`
+                            }}
+
+                        >{itemData.title}</Link></h2>) : <h2>{itemData.title}</h2>}
                         <div className="display-item__info">
                             <p>{`${dateStr} - ${readableViewsNumber}`}</p>
                         </div>

@@ -3,19 +3,13 @@ import React, { Component } from 'react';
 import './ItemsList.css'
 
 import DisplayItem from '../../components/DisplayItem/DisplayItem';
-import { VideoSourceTypes } from '../../types/VideoSourceTypes'
+import { getSupportedVideos } from '../../utils'
 
 class itemsList extends Component {
-    supportedItems = items => {
-        const approved = items.filter(item => {
-            return !!(VideoSourceTypes.find(source => source.name === item.source));
-        });
-        return approved;
-    } ;
 
     render() {
-        const items = this.supportedItems(this.props.items).map((item, index) => {
-            return <DisplayItem key={item.videoId ? item.videoId : index} itemData={item} />;
+        const items = getSupportedVideos(this.props.items).map((item, index) => {
+            return <DisplayItem key={item.videoId ? item.videoId : index} itemData={item}  isLink="true"/>;
         });
 
         return (
